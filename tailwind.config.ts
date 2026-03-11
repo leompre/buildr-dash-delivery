@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['Nunito', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -46,6 +49,15 @@ export default {
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
+        },
+        obracerta: {
+          red: "hsl(var(--obracerta-red))",
+          orange: "hsl(var(--obracerta-orange))",
+          yellow: "hsl(var(--obracerta-yellow))",
+          green: "hsl(var(--obracerta-green))",
+          dark: "hsl(var(--obracerta-dark))",
+          "warm-bg": "hsl(var(--obracerta-warm-bg))",
+          "warm-surface": "hsl(var(--obracerta-warm-surface))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
