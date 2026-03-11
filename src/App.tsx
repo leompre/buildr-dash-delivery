@@ -3,8 +3,17 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import AppLayout from "./components/AppLayout";
+import Index from "./pages/Index";
+import ProductDetail from "./pages/ProductDetail";
+import CategoryPage from "./pages/CategoryPage";
+import ComparePrices from "./pages/ComparePrices";
+import CartPage from "./pages/CartPage";
+import FavoritesPage from "./pages/FavoritesPage";
+import ProfilePage from "./pages/ProfilePage";
+import StorePage from "./pages/StorePage";
+import OrderTracking from "./pages/OrderTracking";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -15,8 +24,17 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Index />} />
+            <Route path="/favoritos" element={<FavoritesPage />} />
+            <Route path="/carrinho" element={<CartPage />} />
+            <Route path="/perfil" element={<ProfilePage />} />
+            <Route path="/categoria/:id" element={<CategoryPage />} />
+            <Route path="/loja/:id" element={<StorePage />} />
+          </Route>
+          <Route path="/produto/:id" element={<ProductDetail />} />
+          <Route path="/comparar/:id" element={<ComparePrices />} />
+          <Route path="/rastreamento" element={<OrderTracking />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
