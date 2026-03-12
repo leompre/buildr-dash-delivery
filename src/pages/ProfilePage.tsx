@@ -1,4 +1,6 @@
-import { User, Package, MapPin, CreditCard, HelpCircle, LogOut, ChevronRight, Star } from "lucide-react";
+import { User, Package, MapPin, CreditCard, HelpCircle, LogOut, ChevronRight, Star, LogIn } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import logoIcon from "@/assets/obracerta-icon.png";
 
 const menuItems = [
@@ -10,6 +12,33 @@ const menuItems = [
 ];
 
 const ProfilePage = () => {
+  const { user, profile, signOut, loading } = useAuth();
+  const navigate = useNavigate();
+
+  if (!loading && !user) {
+    return (
+      <div className="flex flex-col items-center justify-center py-16 px-6 gap-4">
+        <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+          <User className="w-8 h-8 text-muted-foreground" />
+        </div>
+        <h2 className="text-lg font-extrabold text-foreground">Faça login</h2>
+        <p className="text-sm text-muted-foreground text-center">
+          Entre ou crie sua conta para acessar pedidos, endereços e muito mais.
+        </p>
+        <button
+          onClick={() => navigate("/auth")}
+          className="gradient-primary text-primary-foreground font-bold px-8 py-3 rounded-xl flex items-center gap-2"
+        >
+          <LogIn className="w-4 h-4" />
+          Entrar ou cadastrar
+        </button>
+      </div>
+    );
+  }
+
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || "Usuário";
+  const displayEmail = user?.email || "";
+
   return (
     <div className="flex flex-col">
       {/* Profile Header */}
@@ -18,8 +47,8 @@ const ProfilePage = () => {
           <User className="w-7 h-7 text-primary-foreground" />
         </div>
         <div>
-          <p className="text-base font-extrabold text-primary-foreground">João da Silva</p>
-          <p className="text-xs text-primary-foreground/80">joao@email.com</p>
+          <p className="text-base font-extrabold text-primary-foreground">{displayName}</p>
+          <p className="text-xs text-primary-foreground/80">{displayEmail}</p>
         </div>
       </div>
 
@@ -53,7 +82,10 @@ const ProfilePage = () => {
           </button>
         ))}
 
-        <button className="flex items-center gap-3 px-3 py-3.5 rounded-xl hover:bg-muted transition-colors mt-4">
+        <button
+          onClick={async () => { await signOut(); navigate("/"); }}
+          className="flex items-center gap-3 px-3 py-3.5 rounded-xl hover:bg-muted transition-colors mt-4"
+        >
           <LogOut className="w-5 h-5 text-destructive" />
           <span className="text-sm font-semibold text-destructive text-left">Sair</span>
         </button>
