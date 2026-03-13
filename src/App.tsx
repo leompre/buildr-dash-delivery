@@ -39,6 +39,7 @@ const App = () => (
                 <Route path="/loja/:id" element={<StorePage />} />
               </Route>
               <Route path="/auth" element={<AuthPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
               <Route path="/produto/:id" element={<ProductDetail />} />
               <Route path="/comparar/:id" element={<ComparePrices />} />
               <Route path="/rastreamento" element={<OrderTracking />} />
