@@ -3,12 +3,14 @@ import { ArrowLeft, Heart, Star, Clock, Truck, ShoppingCart, Plus, Minus } from 
 import { products } from "@/data/mockData";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/contexts/CartContext";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [qty, setQty] = useState(1);
   const [liked, setLiked] = useState(false);
+  const { addItem } = useCart();
 
   const product = products.find((p) => p.id === id);
   if (!product) return <div className="p-4 text-center text-muted-foreground">Produto não encontrado</div>;
@@ -93,7 +95,13 @@ const ProductDetail = () => {
               <Plus className="w-4 h-4 text-foreground" />
             </button>
           </div>
-          <Button className="flex-1 h-11 gradient-primary text-primary-foreground font-bold rounded-xl gap-2">
+          <Button
+            onClick={() => {
+              addItem(product, qty);
+              setQty(1);
+            }}
+            className="flex-1 h-11 gradient-primary text-primary-foreground font-bold rounded-xl gap-2"
+          >
             <ShoppingCart className="w-4 h-4" />
             Adicionar ao Carrinho
           </Button>
