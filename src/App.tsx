@@ -16,6 +16,7 @@ import ProfilePage from "./pages/ProfilePage";
 import StorePage from "./pages/StorePage";
 import OrderTracking from "./pages/OrderTracking";
 import AuthPage from "./pages/AuthPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
