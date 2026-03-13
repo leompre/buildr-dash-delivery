@@ -1,5 +1,6 @@
 import { Home, Heart, ShoppingCart, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useCart } from "@/contexts/CartContext";
 
 const navItems = [
   { icon: Home, label: "Início", path: "/" },
@@ -11,6 +12,7 @@ const navItems = [
 const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { totalItems } = useCart();
 
   return (
     <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-card border-t border-border safe-bottom z-50">
@@ -21,7 +23,7 @@ const BottomNav = () => {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors ${
+              className={`relative flex flex-col items-center gap-0.5 px-3 py-1 rounded-lg transition-colors ${
                 isActive
                   ? "text-primary"
                   : "text-muted-foreground hover:text-foreground"
@@ -29,9 +31,9 @@ const BottomNav = () => {
             >
               <item.icon className={`w-5 h-5 ${isActive ? "fill-primary/20" : ""}`} />
               <span className="text-[10px] font-semibold">{item.label}</span>
-              {item.path === "/carrinho" && (
+              {item.path === "/carrinho" && totalItems > 0 && (
                 <span className="absolute -top-0.5 right-0.5 w-4 h-4 rounded-full gradient-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">
-                  2
+                  {totalItems > 99 ? "99" : totalItems}
                 </span>
               )}
             </button>
