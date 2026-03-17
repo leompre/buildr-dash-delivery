@@ -12,16 +12,17 @@ const ComparePrices = () => {
   const [addedStoreId, setAddedStoreId] = useState<string | null>(null);
 
   const product = products.find((p) => p.id === id);
-  if (!product) return null;
 
-  const comparisons = useMemo(() =>
-    stores.slice(0, 4).map((store, i) => ({
+  const comparisons = useMemo(() => {
+    if (!product) return [];
+    return stores.slice(0, 4).map((store, i) => ({
       store,
       price: parseFloat((product.price + (i - 1) * (i * 2.5 + 1.3)).toFixed(2)),
       inStock: i !== 2,
-    })).sort((a, b) => a.price - b.price),
-    [product]
-  );
+    })).sort((a, b) => a.price - b.price);
+  }, [product]);
+
+  if (!product) return null;
 
   const handleAddToCart = (comp: typeof comparisons[0]) => {
     const cartProduct = {
