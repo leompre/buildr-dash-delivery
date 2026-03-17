@@ -46,6 +46,8 @@ const App = () => (
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/produto/:id" element={<ProductDetail />} />
                 <Route path="/comparar/:id" element={<ComparePrices />} />
+                <Route path="/ofertas" element={<AllOffersPage />} />
+                <Route path="/lojas" element={<AllStoresPage />} />
                 <Route path="/rastreamento" element={<OrderTracking />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
