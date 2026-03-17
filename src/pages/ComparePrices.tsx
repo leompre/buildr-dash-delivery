@@ -14,11 +14,14 @@ const ComparePrices = () => {
   const product = products.find((p) => p.id === id);
   if (!product) return null;
 
-  const comparisons = stores.slice(0, 4).map((store, i) => ({
-    store,
-    price: parseFloat((product.price + (i - 1) * (Math.random() * 5 + 1)).toFixed(2)),
-    inStock: i !== 2,
-  })).sort((a, b) => a.price - b.price);
+  const comparisons = useMemo(() =>
+    stores.slice(0, 4).map((store, i) => ({
+      store,
+      price: parseFloat((product.price + (i - 1) * (i * 2.5 + 1.3)).toFixed(2)),
+      inStock: i !== 2,
+    })).sort((a, b) => a.price - b.price),
+    [product]
+  );
 
   const handleAddToCart = (comp: typeof comparisons[0]) => {
     const cartProduct = {
