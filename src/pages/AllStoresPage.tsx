@@ -1,18 +1,20 @@
-import { Star, Clock, Truck } from "lucide-react";
+import { Star, Clock, Truck, ArrowLeft } from "lucide-react";
 import { stores } from "@/data/mockData";
 import { useNavigate } from "react-router-dom";
 
-const StoreSection = () => {
+const AllStoresPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="px-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-extrabold text-foreground">🏪 Lojas Próximas</h3>
-        <button onClick={() => navigate("/lojas")} className="text-xs font-semibold text-primary">Ver todas</button>
+    <div className="pb-4">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-card">
+        <button onClick={() => navigate(-1)} className="text-foreground">
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+        <h1 className="text-sm font-extrabold text-foreground">🏪 Todas as Lojas</h1>
       </div>
-      <div className="flex flex-col gap-3">
-        {stores.slice(0, 4).map((store) => (
+      <div className="flex flex-col gap-3 p-4">
+        {stores.map((store) => (
           <button
             key={store.id}
             onClick={() => navigate(`/loja/${store.id}`)}
@@ -26,9 +28,7 @@ const StoreSection = () => {
               <div className="flex items-center gap-1 mt-1">
                 <Star className="w-3 h-3 fill-accent text-accent" />
                 <span className="text-[10px] font-semibold text-foreground">{store.rating}</span>
-                <span className="text-[10px] text-muted-foreground">
-                  ({store.reviews} avaliações)
-                </span>
+                <span className="text-[10px] text-muted-foreground">({store.reviews} avaliações)</span>
               </div>
               <div className="flex items-center gap-3 mt-1.5">
                 <div className="flex items-center gap-1 text-muted-foreground">
@@ -37,9 +37,7 @@ const StoreSection = () => {
                 </div>
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <Truck className="w-3 h-3" />
-                  <span className="text-[10px]">
-                    R$ {store.deliveryFee.toFixed(2).replace(".", ",")}
-                  </span>
+                  <span className="text-[10px]">R$ {store.deliveryFee.toFixed(2).replace(".", ",")}</span>
                 </div>
               </div>
             </div>
@@ -50,4 +48,4 @@ const StoreSection = () => {
   );
 };
 
-export default StoreSection;
+export default AllStoresPage;

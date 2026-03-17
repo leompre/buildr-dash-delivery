@@ -18,6 +18,8 @@ import StorePage from "./pages/StorePage";
 import OrderTracking from "./pages/OrderTracking";
 import AuthPage from "./pages/AuthPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import AllOffersPage from "./pages/AllOffersPage";
+import AllStoresPage from "./pages/AllStoresPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +46,8 @@ const App = () => (
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/produto/:id" element={<ProductDetail />} />
                 <Route path="/comparar/:id" element={<ComparePrices />} />
+                <Route path="/ofertas" element={<AllOffersPage />} />
+                <Route path="/lojas" element={<AllStoresPage />} />
                 <Route path="/rastreamento" element={<OrderTracking />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
