@@ -1,7 +1,9 @@
 import { products } from "@/data/mockData";
 import ProductCard from "./ProductCard";
+import { useNavigate } from "react-router-dom";
 
 const OfferSection = () => {
+  const navigate = useNavigate();
   const offers = products.filter((p) => p.badge === "Oferta");
 
   return (
