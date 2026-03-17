@@ -21,13 +21,12 @@ const ComparePrices = () => {
   })).sort((a, b) => a.price - b.price);
 
   const handleAddToCart = (comp: typeof comparisons[0]) => {
-    addItem({
-      id: product.id,
-      name: product.name,
+    const cartProduct = {
+      ...product,
       price: comp.price,
-      image: product.image,
       store: comp.store.name,
-    });
+    };
+    addItem(cartProduct);
     setAddedStoreId(comp.store.id);
     toast.success(`Adicionado ao carrinho via ${comp.store.name}`);
     setTimeout(() => setAddedStoreId(null), 2000);
