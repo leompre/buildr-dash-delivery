@@ -15,7 +15,10 @@ const HeroBanner = () => {
         <h2 className="text-primary-foreground text-lg font-extrabold leading-tight">
           em um só app!
         </h2>
-        <button className="mt-3 gradient-primary text-primary-foreground text-xs font-bold px-4 py-2 rounded-full w-fit shadow-card">
+        <button
+          onClick={() => document.getElementById("ofertas")?.scrollIntoView({ behavior: "smooth" })}
+          className="mt-3 gradient-primary text-primary-foreground text-xs font-bold px-4 py-2 rounded-full w-fit shadow-card"
+        >
           Ver Ofertas
         </button>
       </div>
