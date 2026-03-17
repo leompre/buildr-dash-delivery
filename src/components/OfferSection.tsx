@@ -5,7 +5,7 @@ const OfferSection = () => {
   const offers = products.filter((p) => p.badge === "Oferta");
 
   return (
-    <div className="px-4">
+    <div id="ofertas" className="px-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-extrabold text-foreground">🔥 Ofertas do Dia</h3>
         <button className="text-xs font-semibold text-primary">Ver todas</button>
