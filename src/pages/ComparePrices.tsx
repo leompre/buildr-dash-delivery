@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Truck, ShoppingCart, Check } from "lucide-react";
 import { products, stores } from "@/data/mockData";
 import { useCart } from "@/contexts/CartContext";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
 const ComparePrices = () => {
