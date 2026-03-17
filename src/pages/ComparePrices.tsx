@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Star, Truck, ShoppingCart, Check } from "lucide-react";
 import { products, stores } from "@/data/mockData";
 import { useCart } from "@/contexts/CartContext";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "sonner";
 
 const ComparePrices = () => {
@@ -12,13 +12,17 @@ const ComparePrices = () => {
   const [addedStoreId, setAddedStoreId] = useState<string | null>(null);
 
   const product = products.find((p) => p.id === id);
-  if (!product) return null;
 
-  const comparisons = stores.slice(0, 4).map((store, i) => ({
-    store,
-    price: parseFloat((product.price + (i - 1) * (Math.random() * 5 + 1)).toFixed(2)),
-    inStock: i !== 2,
-  })).sort((a, b) => a.price - b.price);
+  const comparisons = useMemo(() => {
+    if (!product) return [];
+    return stores.slice(0, 4).map((store, i) => ({
+      store,
+      price: parseFloat((product.price + (i - 1) * (i * 2.5 + 1.3)).toFixed(2)),
+      inStock: i !== 2,
+    })).sort((a, b) => a.price - b.price);
+  }, [product]);
+
+  if (!product) return null;
 
   const handleAddToCart = (comp: typeof comparisons[0]) => {
     const cartProduct = {
@@ -33,7 +37,7 @@ const ComparePrices = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-20">
       <div className="flex items-center gap-3 px-4 py-3 border-b border-border">
         <button onClick={() => navigate(-1)}>
           <ArrowLeft className="w-5 h-5 text-foreground" />

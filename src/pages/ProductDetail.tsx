@@ -18,7 +18,7 @@ const ProductDetail = () => {
   const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col pb-20">
       {/* Header */}
       <div className="relative">
         <img src={product.image} alt={product.name} className="w-full h-64 object-cover" />
