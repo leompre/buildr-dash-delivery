@@ -26,12 +26,15 @@ const CheckoutPage = () => {
   const discount = selectedPayment === "pix" ? subtotal * 0.05 : 0;
   const total = subtotal + deliveryFee - discount;
 
-  if (!user) {
+  const shouldRedirectAuth = !user;
+  const shouldRedirectCart = user && items.length === 0;
+
+  if (shouldRedirectAuth) {
     navigate("/auth");
     return null;
   }
 
-  if (items.length === 0) {
+  if (shouldRedirectCart) {
     navigate("/carrinho");
     return null;
   }

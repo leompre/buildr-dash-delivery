@@ -19,9 +19,7 @@ const CartPage = () => {
       navigate("/auth");
       return;
     }
-    toast.success("Pedido realizado com sucesso! 🎉");
-    clearCart();
-    navigate("/rastreamento");
+    navigate("/checkout");
   };
 
   if (items.length === 0) {
