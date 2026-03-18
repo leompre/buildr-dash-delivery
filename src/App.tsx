@@ -20,6 +20,7 @@ import AuthPage from "./pages/AuthPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AllOffersPage from "./pages/AllOffersPage";
 import AllStoresPage from "./pages/AllStoresPage";
+import CheckoutPage from "./pages/CheckoutPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
                 <Route path="/comparar/:id" element={<ComparePrices />} />
                 <Route path="/ofertas" element={<AllOffersPage />} />
                 <Route path="/lojas" element={<AllStoresPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/rastreamento" element={<OrderTracking />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
