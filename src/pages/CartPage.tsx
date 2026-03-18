@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 const CartPage = () => {
   const navigate = useNavigate();
-  const { items, updateQty, removeItem, clearCart, subtotal } = useCart();
+  const { items, updateQty, removeItem, subtotal } = useCart();
   const { user } = useAuth();
 
   const deliveryFee = items.length > 0 ? 12.0 : 0;
