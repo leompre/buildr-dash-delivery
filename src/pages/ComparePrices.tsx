@@ -50,8 +50,11 @@ const ComparePrices = () => {
       </div>
 
       <div className="p-4 flex flex-col gap-4">
-        {/* Product Card */}
-        <div className="flex items-center gap-4 bg-card rounded-2xl p-4 shadow-card">
+        {/* Product Card - clickable to view details */}
+        <button
+          onClick={() => navigate(`/produto/${product.id}`)}
+          className="flex items-center gap-4 bg-card rounded-2xl p-4 shadow-card text-left w-full hover:ring-2 hover:ring-primary/30 transition-all active:scale-[0.98]"
+        >
           <img
             src={product.image}
             alt={product.name}
@@ -67,7 +70,8 @@ const ComparePrices = () => {
               </span>
             </div>
           </div>
-        </div>
+          <ArrowLeft className="w-4 h-4 text-muted-foreground rotate-180 shrink-0" />
+        </button>
 
         {/* Store Comparison List */}
         <div className="flex flex-col gap-3">
