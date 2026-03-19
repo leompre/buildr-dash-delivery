@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, MapPin, CreditCard, Banknote, QrCode, ChevronRight, Truck, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,22 +26,19 @@ const CheckoutPage = () => {
   const discount = selectedPayment === "pix" ? subtotal * 0.05 : 0;
   const total = subtotal + deliveryFee - discount;
 
-  const shouldRedirectAuth = !user;
-  const shouldRedirectCart = user && items.length === 0;
+  // Redirect in useEffect to avoid state updates during render
+  useEffect(() => {
+    if (!user) {
+      navigate("/auth");
+    } else if (items.length === 0) {
+      navigate("/carrinho");
+    }
+  }, [user, items.length, navigate]);
 
-  if (shouldRedirectAuth) {
-    navigate("/auth");
-    return null;
-  }
-
-  if (shouldRedirectCart) {
-    navigate("/carrinho");
-    return null;
-  }
+  if (!user || items.length === 0) return null;
 
   const handleConfirmOrder = async () => {
     setIsProcessing(true);
-    // Simulate payment processing
     await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsProcessing(false);
     clearCart();
