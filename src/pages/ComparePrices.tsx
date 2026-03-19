@@ -3,7 +3,7 @@ import { ArrowLeft, Star, Truck, ShoppingCart, Check, BadgePercent, ChevronRight
 import { products, stores } from "@/data/mockData";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 
 const ComparePrices = () => {
@@ -28,6 +28,10 @@ const ComparePrices = () => {
   const effectiveSelectedId = selectedStoreId ?? (comparisons.length > 0 ? comparisons[0].store.id : null);
   const selectedComp = comparisons.find((c) => c.store.id === effectiveSelectedId);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [id]);
+
   if (!product) return null;
 
   const lowestPrice = comparisons.length > 0 ? comparisons[0].price : 0;
@@ -50,8 +54,10 @@ const ComparePrices = () => {
     setTimeout(() => setIsAdded(false), 2500);
   };
 
+
+
   return (
-    <div className="flex flex-col pb-28">
+    <div className="flex flex-col min-h-screen pb-28 overflow-y-auto">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-border sticky top-0 bg-background z-10">
         <button onClick={() => navigate(-1)}>
@@ -119,6 +125,13 @@ const ComparePrices = () => {
                   >
                     {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                   </div>
+
+                  {/* Store image */}
+                  <img
+                    src={comp.store.image}
+                    alt={comp.store.name}
+                    className="w-10 h-10 rounded-lg object-cover shrink-0"
+                  />
 
                   {/* Store info */}
                   <div className="flex-1 min-w-0">
