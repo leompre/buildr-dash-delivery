@@ -28,6 +28,10 @@ const ComparePrices = () => {
   const effectiveSelectedId = selectedStoreId ?? (comparisons.length > 0 ? comparisons[0].store.id : null);
   const selectedComp = comparisons.find((c) => c.store.id === effectiveSelectedId);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [id]);
+
   if (!product) return null;
 
   const lowestPrice = comparisons.length > 0 ? comparisons[0].price : 0;
