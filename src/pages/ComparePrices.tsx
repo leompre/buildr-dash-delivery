@@ -124,6 +124,13 @@ const ComparePrices = () => {
                     {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-primary" />}
                   </div>
 
+                  {/* Store image */}
+                  <img
+                    src={comp.store.image}
+                    alt={comp.store.name}
+                    className="w-10 h-10 rounded-lg object-cover shrink-0"
+                  />
+
                   {/* Store info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
