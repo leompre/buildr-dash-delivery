@@ -4,18 +4,30 @@ import { products } from "@/data/mockData";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
+import { toast } from "sonner";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [qty, setQty] = useState(1);
-  const [liked, setLiked] = useState(false);
   const { addItem } = useCart();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   const product = products.find((p) => p.id === id);
   if (!product) return <div className="p-4 text-center text-muted-foreground">Produto não encontrado</div>;
 
+  const liked = isFavorite(product.id);
   const relatedProducts = products.filter((p) => p.category === product.category && p.id !== product.id);
+
+  const handleToggleFavorite = () => {
+    toggleFavorite(product);
+    if (!liked) {
+      toast.success("Adicionado aos favoritos ❤️");
+    } else {
+      toast("Removido dos favoritos");
+    }
+  };
 
   return (
     <div className="flex flex-col pb-20">
@@ -29,10 +41,10 @@ const ProductDetail = () => {
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
         <button
-          onClick={() => setLiked(!liked)}
+          onClick={handleToggleFavorite}
           className="absolute top-4 right-4 w-9 h-9 rounded-full bg-card/80 backdrop-blur flex items-center justify-center shadow-card"
         >
-          <Heart className={`w-5 h-5 ${liked ? "fill-primary text-primary" : "text-foreground"}`} />
+          <Heart className={`w-5 h-5 transition-colors ${liked ? "fill-primary text-primary" : "text-foreground"}`} />
         </button>
         {product.badge && (
           <span className="absolute bottom-4 left-4 gradient-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
