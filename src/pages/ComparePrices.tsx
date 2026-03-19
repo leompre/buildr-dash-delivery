@@ -173,7 +173,7 @@ const ComparePrices = () => {
 
       {/* Fixed bottom CTA */}
       {selectedComp && selectedComp.inStock && (
-        <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-background border-t border-border p-4 z-20">
+        <div className="fixed bottom-16 left-0 right-0 max-w-md mx-auto bg-background border-t border-border p-4 z-20">
           <Button
             onClick={handleAddToCart}
             disabled={isAdded}
