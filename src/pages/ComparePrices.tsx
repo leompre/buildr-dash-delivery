@@ -3,7 +3,7 @@ import { ArrowLeft, Star, Truck, ShoppingCart, Check, BadgePercent, ChevronRight
 import { products, stores } from "@/data/mockData";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { toast } from "sonner";
 
 const ComparePrices = () => {
