@@ -50,8 +50,12 @@ const ComparePrices = () => {
     setTimeout(() => setIsAdded(false), 2500);
   };
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [id]);
+
   return (
-    <div className="flex flex-col pb-28">
+    <div className="flex flex-col min-h-screen pb-28 overflow-y-auto">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-border sticky top-0 bg-background z-10">
         <button onClick={() => navigate(-1)}>
