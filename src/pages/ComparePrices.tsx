@@ -57,7 +57,7 @@ const ComparePrices = () => {
 
 
   return (
-    <div className="flex flex-col min-h-screen pb-28 overflow-y-auto">
+    <div className="flex flex-col pb-36">
       {/* Header */}
       <div className="flex items-center gap-3 px-4 py-3 border-b border-border sticky top-0 bg-background z-10">
         <button onClick={() => navigate(-1)}>
@@ -173,7 +173,7 @@ const ComparePrices = () => {
 
       {/* Fixed bottom CTA */}
       {selectedComp && selectedComp.inStock && (
-        <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-background border-t border-border p-4 z-20">
+        <div className="fixed bottom-16 left-0 right-0 max-w-md mx-auto bg-background border-t border-border p-4 z-20">
           <Button
             onClick={handleAddToCart}
             disabled={isAdded}
