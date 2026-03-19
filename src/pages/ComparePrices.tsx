@@ -54,9 +54,7 @@ const ComparePrices = () => {
     setTimeout(() => setIsAdded(false), 2500);
   };
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }, [id]);
+
 
   return (
     <div className="flex flex-col min-h-screen pb-28 overflow-y-auto">
