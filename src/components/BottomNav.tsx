@@ -11,7 +11,7 @@ const navItems = [
 ];
 
 // Pages where bottom nav should be hidden
-const hiddenPaths = ["/auth", "/reset-password", "/checkout"];
+const hiddenPaths = ["/auth", "/reset-password", "/checkout", "/pedido-confirmado"];
 
 const BottomNav = () => {
   const location = useLocation();
