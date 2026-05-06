@@ -68,10 +68,19 @@ const OrderConfirmedPage = () => {
 
       <div className="w-full flex flex-col gap-2">
         <Button
-          onClick={() => navigate(state.orderId ? `/pedido/${state.orderId}` : "/pedidos")}
+          onClick={() =>
+            navigate(state.orderId ? `/rastreamento?id=${state.orderId}` : "/rastreamento")
+          }
           className="w-full h-12 gradient-primary text-primary-foreground font-bold rounded-xl"
         >
           <Package className="w-4 h-4 mr-2" />
+          Acompanhar pedido
+        </Button>
+        <Button
+          onClick={() => navigate(state.orderId ? `/pedido/${state.orderId}` : "/pedidos")}
+          variant="outline"
+          className="w-full h-12 font-bold rounded-xl"
+        >
           Ver detalhes do pedido
         </Button>
         <Button
