@@ -139,7 +139,7 @@ const OrderDetailPage = () => {
 
       <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-background border-t border-border p-4 z-20 flex gap-2">
         <Button
-          onClick={() => navigate("/rastreamento")}
+          onClick={() => navigate(`/rastreamento?id=${order.id}`)}
           variant="outline"
           className="flex-1 h-12 font-bold rounded-xl"
         >
