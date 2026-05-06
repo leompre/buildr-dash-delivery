@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
+import { OrdersProvider } from "@/contexts/OrdersContext";
 import AppLayout from "./components/AppLayout";
 import BottomNav from "./components/BottomNav";
 import Index from "./pages/Index";
@@ -23,6 +24,8 @@ import AllOffersPage from "./pages/AllOffersPage";
 import AllStoresPage from "./pages/AllStoresPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderConfirmedPage from "./pages/OrderConfirmedPage";
+import OrdersPage from "./pages/OrdersPage";
+import OrderDetailPage from "./pages/OrderDetailPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +35,7 @@ const App = () => (
     <AuthProvider>
       <CartProvider>
         <FavoritesProvider>
+        <OrdersProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -43,6 +47,8 @@ const App = () => (
                   <Route path="/favoritos" element={<FavoritesPage />} />
                   <Route path="/carrinho" element={<CartPage />} />
                   <Route path="/perfil" element={<ProfilePage />} />
+                  <Route path="/pedidos" element={<OrdersPage />} />
+                  <Route path="/pedido/:id" element={<OrderDetailPage />} />
                   <Route path="/categoria/:id" element={<CategoryPage />} />
                   <Route path="/loja/:id" element={<StorePage />} />
                 </Route>
@@ -61,6 +67,7 @@ const App = () => (
             </div>
           </BrowserRouter>
         </TooltipProvider>
+        </OrdersProvider>
         </FavoritesProvider>
       </CartProvider>
     </AuthProvider>
