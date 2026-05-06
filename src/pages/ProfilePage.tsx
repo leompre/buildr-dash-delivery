@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import logoIcon from "@/assets/obracerta-icon.png";
 
-const menuItems = [
-  { icon: Package, label: "Meus Pedidos", badge: "2" },
+const menuItems: { icon: typeof User; label: string; badge?: string; route?: string }[] = [
+  { icon: Package, label: "Meus Pedidos", route: "/pedidos" },
   { icon: MapPin, label: "Endereços" },
   { icon: CreditCard, label: "Pagamento" },
   { icon: Star, label: "Programa de Fidelidade", badge: "Novo" },
@@ -69,6 +69,7 @@ const ProfilePage = () => {
         {menuItems.map((item) => (
           <button
             key={item.label}
+            onClick={() => item.route && navigate(item.route)}
             className="flex items-center gap-3 px-3 py-3.5 rounded-xl hover:bg-muted transition-colors"
           >
             <item.icon className="w-5 h-5 text-muted-foreground" />
