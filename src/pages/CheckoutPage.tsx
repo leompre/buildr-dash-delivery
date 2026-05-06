@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useOrders } from "@/contexts/OrdersContext";
 import { toast } from "sonner";
 
 type PaymentMethod = "pix" | "credit" | "debit" | "cash";
@@ -52,6 +53,7 @@ const CheckoutPage = () => {
   const navigate = useNavigate();
   const { items, subtotal, clearCart } = useCart();
   const { user } = useAuth();
+  const { addOrder } = useOrders();
 
   const [step, setStep] = useState(0);
   const [address, setAddress] = useState({
@@ -108,14 +110,31 @@ const CheckoutPage = () => {
     setIsProcessing(true);
     await new Promise((r) => setTimeout(r, 1500));
     const orderNumber = `OC-${Math.floor(Math.random() * 9000 + 1000)}`;
+    const deliveryLabel = deliveryOptions.find((d) => d.id === delivery)?.label ?? "";
+    const paymentLabel = paymentMethods.find((p) => p.id === selectedPayment)?.label ?? "";
+    const fullAddress = `${address.street} • ${address.neighborhood}${
+      address.complement ? ` • ${address.complement}` : ""
+    }`;
+    const created = addOrder({
+      number: orderNumber,
+      items,
+      subtotal,
+      deliveryFee,
+      discount: pixDiscount + couponDiscount,
+      total,
+      delivery: deliveryLabel,
+      payment: paymentLabel,
+      address: fullAddress,
+    });
     setIsProcessing(false);
     clearCart();
     navigate("/pedido-confirmado", {
       state: {
+        orderId: created.id,
         orderNumber,
         total,
-        delivery: deliveryOptions.find((d) => d.id === delivery)?.label,
-        payment: paymentMethods.find((p) => p.id === selectedPayment)?.label,
+        delivery: deliveryLabel,
+        payment: paymentLabel,
       },
     });
   };
