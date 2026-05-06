@@ -4,6 +4,7 @@ import { CheckCircle2, Package, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface OrderState {
+  orderId?: string;
   orderNumber?: string;
   total?: number;
   delivery?: string;
@@ -67,11 +68,11 @@ const OrderConfirmedPage = () => {
 
       <div className="w-full flex flex-col gap-2">
         <Button
-          onClick={() => navigate("/rastreamento")}
+          onClick={() => navigate(state.orderId ? `/pedido/${state.orderId}` : "/pedidos")}
           className="w-full h-12 gradient-primary text-primary-foreground font-bold rounded-xl"
         >
           <Package className="w-4 h-4 mr-2" />
-          Acompanhar pedido
+          Ver detalhes do pedido
         </Button>
         <Button
           onClick={() => navigate("/")}
