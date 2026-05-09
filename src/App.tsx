@@ -38,7 +38,7 @@ const App = () => (
         <OrdersProvider>
         <TooltipProvider>
           <Toaster />
-          <Sonner />
+          <Sonner position="top-center" duration={2000} closeButton />
           <BrowserRouter>
             <div className="min-h-screen bg-background flex flex-col max-w-md mx-auto relative">
               <Routes>
