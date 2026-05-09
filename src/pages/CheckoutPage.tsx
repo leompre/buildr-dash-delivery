@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
   MapPin,
@@ -194,6 +195,15 @@ const CheckoutPage = () => {
       </div>
 
       <div className="p-4 flex flex-col gap-4">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="flex flex-col gap-4"
+          >
         {/* Step 0: Address */}
         {step === 0 && (
           <div className="bg-card rounded-xl p-4 shadow-card flex flex-col gap-3">
@@ -370,6 +380,8 @@ const CheckoutPage = () => {
             </div>
           </>
         )}
+          </motion.div>
+        </AnimatePresence>
 
         {/* Persistent summary */}
         <div className="bg-card rounded-xl p-4 shadow-card flex flex-col gap-2">
