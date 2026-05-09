@@ -1,5 +1,6 @@
 import { Home, Heart, ShoppingCart, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { useCart } from "@/contexts/CartContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
 
@@ -43,11 +44,20 @@ const BottomNav = () => {
             >
               <item.icon className={`w-5 h-5 ${isActive ? "fill-primary/20" : ""}`} />
               <span className="text-[10px] font-semibold">{item.label}</span>
-              {badgeCount > 0 && (
-                <span className="absolute -top-0.5 right-0.5 w-4 h-4 rounded-full gradient-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">
-                  {badgeCount > 99 ? "99" : badgeCount}
-                </span>
-              )}
+              <AnimatePresence>
+                {badgeCount > 0 && (
+                  <motion.span
+                    key={badgeCount}
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: [0, 1.3, 1], opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    transition={{ duration: 0.35 }}
+                    className="absolute -top-0.5 right-0.5 min-w-4 h-4 px-1 rounded-full gradient-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center shadow-md"
+                  >
+                    {badgeCount > 99 ? "99" : badgeCount}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </button>
           );
         })}
