@@ -9,10 +9,14 @@ export interface CartItem {
 
 interface CartContextType {
   items: CartItem[];
+  savedItems: CartItem[];
   addItem: (product: Product, qty?: number) => void;
   removeItem: (productId: string) => void;
   updateQty: (productId: string, qty: number) => void;
   clearCart: () => void;
+  saveForLater: (productId: string) => void;
+  moveToCart: (productId: string) => void;
+  removeSaved: (productId: string) => void;
   totalItems: number;
   subtotal: number;
 }
@@ -20,25 +24,29 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 const STORAGE_KEY = "buildr:cart";
+const SAVED_KEY = "buildr:saved";
+
+const readStorage = <T,>(key: string, fallback: T): T => {
+  if (typeof window === "undefined") return fallback;
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? (JSON.parse(raw) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+};
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<CartItem[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as CartItem[]) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [items, setItems] = useState<CartItem[]>(() => readStorage(STORAGE_KEY, [] as CartItem[]));
+  const [savedItems, setSavedItems] = useState<CartItem[]>(() => readStorage(SAVED_KEY, [] as CartItem[]));
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    } catch {
-      /* noop */
-    }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); } catch { /* noop */ }
   }, [items]);
+
+  useEffect(() => {
+    try { localStorage.setItem(SAVED_KEY, JSON.stringify(savedItems)); } catch { /* noop */ }
+  }, [savedItems]);
 
   const addItem = useCallback((product: Product, qty = 1) => {
     setItems((prev) => {
@@ -69,12 +77,45 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = useCallback(() => setItems([]), []);
 
+  const saveForLater = useCallback((productId: string) => {
+    setItems((prev) => {
+      const item = prev.find((i) => i.product.id === productId);
+      if (!item) return prev;
+      setSavedItems((s) => {
+        if (s.some((x) => x.product.id === productId)) return s;
+        return [...s, item];
+      });
+      toast("Salvo para depois", { duration: 1500 });
+      return prev.filter((i) => i.product.id !== productId);
+    });
+  }, []);
+
+  const moveToCart = useCallback((productId: string) => {
+    setSavedItems((prev) => {
+      const item = prev.find((i) => i.product.id === productId);
+      if (!item) return prev;
+      setItems((c) => {
+        const existing = c.find((i) => i.product.id === productId);
+        if (existing) {
+          return c.map((i) => i.product.id === productId ? { ...i, qty: i.qty + item.qty } : i);
+        }
+        return [...c, item];
+      });
+      toast.success("Adicionado ao carrinho", { duration: 1500 });
+      return prev.filter((i) => i.product.id !== productId);
+    });
+  }, []);
+
+  const removeSaved = useCallback((productId: string) => {
+    setSavedItems((prev) => prev.filter((i) => i.product.id !== productId));
+  }, []);
+
   const totalItems = items.reduce((sum, i) => sum + i.qty, 0);
   const subtotal = items.reduce((sum, i) => sum + i.product.price * i.qty, 0);
 
   return (
     <CartContext.Provider
-      value={{ items, addItem, removeItem, updateQty, clearCart, totalItems, subtotal }}
+      value={{ items, savedItems, addItem, removeItem, updateQty, clearCart, saveForLater, moveToCart, removeSaved, totalItems, subtotal }}
     >
       {children}
     </CartContext.Provider>
