@@ -50,7 +50,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
       return [...prev, { product, qty }];
     });
-    toast.success(`${product.name} adicionado ao carrinho`);
+    toast.success(`${product.name} adicionado ao carrinho`, { duration: 1500 });
   }, []);
 
   const removeItem = useCallback((productId: string) => {
