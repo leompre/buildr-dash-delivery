@@ -368,6 +368,7 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
                     <button
                       key={store.id}
                       onClick={() => {
+                        if (query) saveRecent(query);
                         onClose();
                         navigate(`/loja/${store.id}`);
                       }}
@@ -402,6 +403,7 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
                     <button
                       key={product.id}
                       onClick={() => {
+                        if (query) saveRecent(query);
                         onClose();
                         navigate(`/produto/${product.id}`);
                       }}
