@@ -290,18 +290,47 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
       <div className="flex-1 overflow-y-auto">
         {/* Suggestions (autocomplete) */}
         {!showResults && suggestions.length === 0 && (
-          <div className="p-4 space-y-3">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Buscas populares</p>
-            {["Cimento", "Tintas", "Ferramentas", "Porcelanato", "Fio elétrico"].map((term) => (
-              <button
-                key={term}
-                onClick={() => setQuery(term)}
-                className="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-muted transition-colors"
-              >
-                <Search className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm">{term}</span>
-              </button>
-            ))}
+          <div className="p-4 space-y-5">
+            {recents.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+                    Buscas recentes
+                  </p>
+                  <button onClick={clearRecents} className="text-[11px] text-primary font-semibold">
+                    Limpar
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {recents.map((term) => (
+                    <button
+                      key={term}
+                      onClick={() => setQuery(term)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-foreground text-xs font-semibold hover:bg-secondary transition-colors"
+                    >
+                      <Clock className="w-3 h-3 text-muted-foreground" />
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">
+                Buscas populares
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["Cimento", "Tintas", "Ferramentas", "Porcelanato", "Fio elétrico"].map((term) => (
+                  <button
+                    key={term}
+                    onClick={() => setQuery(term)}
+                    className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold hover:bg-primary/20 transition-colors"
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
