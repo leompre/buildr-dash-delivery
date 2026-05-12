@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Search, X, SlidersHorizontal, Star, ArrowLeft } from "lucide-react";
+import { Search, X, SlidersHorizontal, Star, ArrowLeft, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { products, stores, categories } from "@/data/mockData";
 
@@ -9,6 +9,18 @@ interface SearchOverlayProps {
   initialQuery?: string;
 }
 
+const RECENT_KEY = "buildr:recent-searches";
+const MAX_RECENTS = 6;
+
+const loadRecents = (): string[] => {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+};
+
 const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps) => {
   const [query, setQuery] = useState(initialQuery);
   const [showFilters, setShowFilters] = useState(false);
@@ -16,6 +28,7 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState<"relevance" | "price_asc" | "price_desc" | "rating">("relevance");
+  const [recents, setRecents] = useState<string[]>(loadRecents);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -25,8 +38,43 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
     }
     if (open) {
       setQuery(initialQuery);
+      setRecents(loadRecents());
     }
   }, [open, initialQuery]);
+
+  const saveRecent = (term: string) => {
+    const t = term.trim();
+    if (!t) return;
+    const next = [t, ...recents.filter((r) => r.toLowerCase() !== t.toLowerCase())].slice(0, MAX_RECENTS);
+    setRecents(next);
+    try {
+      localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+    } catch {
+      /* noop */
+    }
+  };
+
+  const clearRecents = () => {
+    setRecents([]);
+    try {
+      localStorage.removeItem(RECENT_KEY);
+    } catch {
+      /* noop */
+    }
+  };
+
+  const activeFilterCount =
+    (selectedCategory ? 1 : 0) +
+    (minRating > 0 ? 1 : 0) +
+    (priceRange[1] < 500 ? 1 : 0) +
+    (sortBy !== "relevance" ? 1 : 0);
+
+  const clearAllFilters = () => {
+    setSelectedCategory(null);
+    setPriceRange([0, 500]);
+    setMinRating(0);
+    setSortBy("relevance");
+  };
 
   const filteredProducts = useMemo(() => {
     let result = products.filter((p) => {
