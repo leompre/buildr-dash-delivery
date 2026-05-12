@@ -141,11 +141,63 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
         </div>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className={`p-2 rounded-lg transition-colors ${showFilters ? "bg-primary-foreground/20" : ""} text-primary-foreground`}
+          className={`relative p-2 rounded-lg transition-colors ${showFilters ? "bg-primary-foreground/20" : ""} text-primary-foreground`}
         >
           <SlidersHorizontal className="w-5 h-5" />
+          {activeFilterCount > 0 && (
+            <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-accent text-accent-foreground text-[9px] font-bold flex items-center justify-center">
+              {activeFilterCount}
+            </span>
+          )}
         </button>
       </div>
+
+      {/* Active filter chips */}
+      {activeFilterCount > 0 && !showFilters && (
+        <div className="bg-card border-b border-border px-3 py-2 flex gap-2 overflow-x-auto scrollbar-hide">
+          {selectedCategory && (
+            <button
+              onClick={() => setSelectedCategory(null)}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold whitespace-nowrap"
+            >
+              {categories.find((c) => c.id === selectedCategory)?.name}
+              <X className="w-3 h-3" />
+            </button>
+          )}
+          {minRating > 0 && (
+            <button
+              onClick={() => setMinRating(0)}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold whitespace-nowrap"
+            >
+              {minRating}+ <Star className="w-2.5 h-2.5 fill-current" />
+              <X className="w-3 h-3" />
+            </button>
+          )}
+          {priceRange[1] < 500 && (
+            <button
+              onClick={() => setPriceRange([0, 500])}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold whitespace-nowrap"
+            >
+              Até R$ {priceRange[1]} <X className="w-3 h-3" />
+            </button>
+          )}
+          {sortBy !== "relevance" && (
+            <button
+              onClick={() => setSortBy("relevance")}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold whitespace-nowrap"
+            >
+              {sortBy === "price_asc" ? "Menor preço" : sortBy === "price_desc" ? "Maior preço" : "Avaliação"}
+              <X className="w-3 h-3" />
+            </button>
+          )}
+          <button
+            onClick={clearAllFilters}
+            className="px-2.5 py-1 rounded-full text-[11px] font-semibold text-muted-foreground whitespace-nowrap"
+          >
+            Limpar
+          </button>
+        </div>
+      )}
 
       {/* Filters panel */}
       {showFilters && (
