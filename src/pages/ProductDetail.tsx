@@ -30,7 +30,7 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="flex flex-col pb-20">
+    <div className="flex flex-col pb-32">
       {/* Header */}
       <div className="relative">
         <img src={product.image} alt={product.name} className="w-full h-64 object-cover" />
@@ -86,6 +86,11 @@ const ProductDetail = () => {
               R$ {product.originalPrice.toFixed(2).replace(".", ",")}
             </span>
           )}
+          {product.originalPrice && (
+            <span className="ml-1 mb-0.5 text-[10px] font-bold gradient-primary text-primary-foreground px-2 py-0.5 rounded-full">
+              -{Math.round((1 - product.price / product.originalPrice) * 100)}%
+            </span>
+          )}
         </div>
 
         {/* Compare button */}
@@ -95,29 +100,6 @@ const ProductDetail = () => {
         >
           📊 Comparar preços em outras lojas
         </button>
-
-        {/* Quantity + Add to cart */}
-        <div className="flex items-center gap-4 mt-2">
-          <div className="flex items-center gap-3 bg-muted rounded-xl px-3 py-2">
-            <button onClick={() => setQty(Math.max(1, qty - 1))}>
-              <Minus className="w-4 h-4 text-foreground" />
-            </button>
-            <span className="text-sm font-bold text-foreground w-6 text-center">{qty}</span>
-            <button onClick={() => setQty(qty + 1)}>
-              <Plus className="w-4 h-4 text-foreground" />
-            </button>
-          </div>
-          <Button
-            onClick={() => {
-              addItem(product, qty);
-              setQty(1);
-            }}
-            className="flex-1 h-11 gradient-primary text-primary-foreground font-bold rounded-xl gap-2"
-          >
-            <ShoppingCart className="w-4 h-4" />
-            Adicionar ao Carrinho
-          </Button>
-        </div>
 
         {/* Related */}
         {relatedProducts.length > 0 && (
@@ -142,6 +124,31 @@ const ProductDetail = () => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Sticky bottom CTA */}
+      <div className="fixed bottom-16 left-0 right-0 max-w-md mx-auto bg-background/95 backdrop-blur border-t border-border p-3 z-30">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-muted rounded-xl px-2.5 py-2">
+            <button onClick={() => setQty(Math.max(1, qty - 1))} aria-label="Diminuir">
+              <Minus className="w-4 h-4 text-foreground" />
+            </button>
+            <span className="text-sm font-bold text-foreground w-5 text-center">{qty}</span>
+            <button onClick={() => setQty(qty + 1)} aria-label="Aumentar">
+              <Plus className="w-4 h-4 text-foreground" />
+            </button>
+          </div>
+          <Button
+            onClick={() => {
+              addItem(product, qty);
+              setQty(1);
+            }}
+            className="flex-1 h-11 gradient-primary text-primary-foreground font-bold rounded-xl gap-2"
+          >
+            <ShoppingCart className="w-4 h-4" />
+            Adicionar • R$ {(product.price * qty).toFixed(2).replace(".", ",")}
+          </Button>
+        </div>
       </div>
     </div>
   );

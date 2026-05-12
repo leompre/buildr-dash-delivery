@@ -93,84 +93,102 @@ const OrderTracking = () => {
       ? "Chegando em alguns minutos"
       : "Loja preparando seu pedido";
 
+  const isLive = order.status !== "delivered" && order.status !== "canceled";
+
   return (
     <div className="flex flex-col pb-20">
       <div className="flex items-center gap-3 px-4 py-3 border-b border-border sticky top-0 bg-background z-10">
         <button onClick={() => navigate(-1)} aria-label="Voltar">
           <ArrowLeft className="w-5 h-5 text-foreground" />
         </button>
-        <h1 className="text-base font-extrabold text-foreground">📦 Rastreamento</h1>
+        <h1 className="text-base font-extrabold text-foreground">Rastreamento</h1>
+      </div>
+
+      {/* ETA hero banner */}
+      <div className="mx-4 mt-4 rounded-2xl gradient-primary p-4 shadow-elevated text-primary-foreground">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[10px] font-semibold opacity-80 uppercase tracking-wide">
+              {order.status === "delivered" ? "Pedido finalizado" : "Previsão de entrega"}
+            </p>
+            <p className="text-xl font-extrabold mt-0.5">{eta}</p>
+            <p className="text-[11px] opacity-90 mt-1">{statusLabels[order.status]}</p>
+          </div>
+          {isLive && (
+            <div className="relative flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-primary-foreground opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-primary-foreground" />
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Map placeholder */}
-      <div className="mx-4 mt-4 h-44 rounded-2xl bg-muted flex items-center justify-center shadow-card overflow-hidden">
-        <div className="text-center">
-          <MapPin className="w-8 h-8 text-primary mx-auto mb-2" />
-          <p className="text-xs text-muted-foreground">Mapa em tempo real</p>
-          <p className="text-[10px] text-muted-foreground">{eta}</p>
+      <div className="mx-4 mt-3 h-36 rounded-2xl bg-muted flex items-center justify-center shadow-card overflow-hidden relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,hsl(var(--primary)/0.15),transparent_60%)]" />
+        <div className="text-center relative">
+          <MapPin className="w-7 h-7 text-primary mx-auto mb-1" />
+          <p className="text-[11px] font-semibold text-foreground">Mapa em tempo real</p>
+          <p className="text-[10px] text-muted-foreground">Acompanhe pelo app</p>
         </div>
-      </div>
-
-      {/* Current status badge */}
-      <div className="mx-4 mt-4 bg-card rounded-xl p-3 shadow-card flex items-center justify-between">
-        <div>
-          <p className="text-[10px] text-muted-foreground">Status atual</p>
-          <p className="text-sm font-extrabold text-foreground">
-            {statusLabels[order.status]}
-          </p>
-        </div>
-        {order.status !== "delivered" && order.status !== "canceled" && (
-          <span className="flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-2.5 w-2.5 rounded-full bg-primary opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
-          </span>
-        )}
       </div>
 
       {/* Steps */}
       <div className="p-4">
         <h3 className="text-sm font-extrabold text-foreground mb-4">Status do Pedido</h3>
         <div className="flex flex-col gap-0">
-          {stepsRendered.map((step, i) => (
-            <div key={i} className="flex gap-3">
-              <div className="flex flex-col items-center">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                    step.done ? "gradient-primary" : "bg-muted"
-                  }`}
-                >
-                  <step.icon
-                    className={`w-4 h-4 ${
-                      step.done ? "text-primary-foreground" : "text-muted-foreground"
-                    }`}
-                  />
-                </div>
-                {i < stepsRendered.length - 1 && (
+          {stepsRendered.map((step, i) => {
+            const nextDone = stepsRendered[i + 1]?.done;
+            const isCurrent = step.done && !nextDone && isLive;
+            return (
+              <div key={i} className="flex gap-3">
+                <div className="flex flex-col items-center">
                   <div
-                    className={`w-0.5 h-8 transition-colors ${
-                      step.done ? "bg-primary" : "bg-muted"
+                    className={`relative w-9 h-9 rounded-full flex items-center justify-center transition-all ${
+                      step.done ? "gradient-primary shadow-card" : "bg-muted"
                     }`}
-                  />
-                )}
+                  >
+                    {isCurrent && (
+                      <span className="absolute inset-0 rounded-full gradient-primary animate-ping opacity-50" />
+                    )}
+                    <step.icon
+                      className={`w-4 h-4 relative ${
+                        step.done ? "text-primary-foreground" : "text-muted-foreground"
+                      }`}
+                    />
+                  </div>
+                  {i < stepsRendered.length - 1 && (
+                    <div
+                      className={`w-0.5 h-8 transition-colors ${
+                        nextDone ? "bg-primary" : "bg-muted"
+                      }`}
+                    />
+                  )}
+                </div>
+                <div className="pb-6 pt-1">
+                  <p
+                    className={`text-xs font-bold ${
+                      step.done ? "text-foreground" : "text-muted-foreground"
+                    }`}
+                  >
+                    {step.label}
+                    {isCurrent && (
+                      <span className="ml-2 text-[10px] font-bold text-primary uppercase tracking-wide">
+                        Agora
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-[10px] text-muted-foreground">{formatTime(step.time)}</p>
+                </div>
               </div>
-              <div className="pb-6">
-                <p
-                  className={`text-xs font-bold ${
-                    step.done ? "text-foreground" : "text-muted-foreground"
-                  }`}
-                >
-                  {step.label}
-                </p>
-                <p className="text-[10px] text-muted-foreground">{formatTime(step.time)}</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* Order info */}
-      <div
-        className="mx-4 bg-card rounded-xl p-4 shadow-card cursor-pointer"
+      <button
+        className="mx-4 bg-card rounded-xl p-4 shadow-card text-left active:scale-[0.99] transition-transform"
         onClick={() => navigate(`/pedido/${order.id}`)}
       >
         <p className="text-xs font-bold text-foreground">Pedido #{order.number}</p>
@@ -180,7 +198,7 @@ const OrderTracking = () => {
         <p className="text-sm font-extrabold text-primary mt-2">
           R$ {order.total.toFixed(2).replace(".", ",")}
         </p>
-      </div>
+      </button>
     </div>
   );
 };

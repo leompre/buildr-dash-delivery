@@ -12,9 +12,11 @@ const OfferSection = () => {
         <h3 className="text-sm font-extrabold text-foreground">🔥 Ofertas do Dia</h3>
         <button onClick={() => navigate("/ofertas")} className="text-xs font-semibold text-primary">Ver todas</button>
       </div>
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
         {offers.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <div key={product.id} className="snap-start">
+            <ProductCard product={product} />
+          </div>
         ))}
       </div>
     </div>

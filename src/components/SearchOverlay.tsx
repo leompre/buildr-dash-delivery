@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Search, X, SlidersHorizontal, Star, ArrowLeft } from "lucide-react";
+import { Search, X, SlidersHorizontal, Star, ArrowLeft, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { products, stores, categories } from "@/data/mockData";
 
@@ -9,6 +9,18 @@ interface SearchOverlayProps {
   initialQuery?: string;
 }
 
+const RECENT_KEY = "buildr:recent-searches";
+const MAX_RECENTS = 6;
+
+const loadRecents = (): string[] => {
+  try {
+    const raw = localStorage.getItem(RECENT_KEY);
+    return raw ? (JSON.parse(raw) as string[]) : [];
+  } catch {
+    return [];
+  }
+};
+
 const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps) => {
   const [query, setQuery] = useState(initialQuery);
   const [showFilters, setShowFilters] = useState(false);
@@ -16,6 +28,7 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
   const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState<"relevance" | "price_asc" | "price_desc" | "rating">("relevance");
+  const [recents, setRecents] = useState<string[]>(loadRecents);
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -25,8 +38,43 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
     }
     if (open) {
       setQuery(initialQuery);
+      setRecents(loadRecents());
     }
   }, [open, initialQuery]);
+
+  const saveRecent = (term: string) => {
+    const t = term.trim();
+    if (!t) return;
+    const next = [t, ...recents.filter((r) => r.toLowerCase() !== t.toLowerCase())].slice(0, MAX_RECENTS);
+    setRecents(next);
+    try {
+      localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+    } catch {
+      /* noop */
+    }
+  };
+
+  const clearRecents = () => {
+    setRecents([]);
+    try {
+      localStorage.removeItem(RECENT_KEY);
+    } catch {
+      /* noop */
+    }
+  };
+
+  const activeFilterCount =
+    (selectedCategory ? 1 : 0) +
+    (minRating > 0 ? 1 : 0) +
+    (priceRange[1] < 500 ? 1 : 0) +
+    (sortBy !== "relevance" ? 1 : 0);
+
+  const clearAllFilters = () => {
+    setSelectedCategory(null);
+    setPriceRange([0, 500]);
+    setMinRating(0);
+    setSortBy("relevance");
+  };
 
   const filteredProducts = useMemo(() => {
     let result = products.filter((p) => {
@@ -93,11 +141,63 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
         </div>
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className={`p-2 rounded-lg transition-colors ${showFilters ? "bg-primary-foreground/20" : ""} text-primary-foreground`}
+          className={`relative p-2 rounded-lg transition-colors ${showFilters ? "bg-primary-foreground/20" : ""} text-primary-foreground`}
         >
           <SlidersHorizontal className="w-5 h-5" />
+          {activeFilterCount > 0 && (
+            <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full bg-accent text-accent-foreground text-[9px] font-bold flex items-center justify-center">
+              {activeFilterCount}
+            </span>
+          )}
         </button>
       </div>
+
+      {/* Active filter chips */}
+      {activeFilterCount > 0 && !showFilters && (
+        <div className="bg-card border-b border-border px-3 py-2 flex gap-2 overflow-x-auto scrollbar-hide">
+          {selectedCategory && (
+            <button
+              onClick={() => setSelectedCategory(null)}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold whitespace-nowrap"
+            >
+              {categories.find((c) => c.id === selectedCategory)?.name}
+              <X className="w-3 h-3" />
+            </button>
+          )}
+          {minRating > 0 && (
+            <button
+              onClick={() => setMinRating(0)}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold whitespace-nowrap"
+            >
+              {minRating}+ <Star className="w-2.5 h-2.5 fill-current" />
+              <X className="w-3 h-3" />
+            </button>
+          )}
+          {priceRange[1] < 500 && (
+            <button
+              onClick={() => setPriceRange([0, 500])}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold whitespace-nowrap"
+            >
+              Até R$ {priceRange[1]} <X className="w-3 h-3" />
+            </button>
+          )}
+          {sortBy !== "relevance" && (
+            <button
+              onClick={() => setSortBy("relevance")}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-semibold whitespace-nowrap"
+            >
+              {sortBy === "price_asc" ? "Menor preço" : sortBy === "price_desc" ? "Maior preço" : "Avaliação"}
+              <X className="w-3 h-3" />
+            </button>
+          )}
+          <button
+            onClick={clearAllFilters}
+            className="px-2.5 py-1 rounded-full text-[11px] font-semibold text-muted-foreground whitespace-nowrap"
+          >
+            Limpar
+          </button>
+        </div>
+      )}
 
       {/* Filters panel */}
       {showFilters && (
@@ -190,18 +290,47 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
       <div className="flex-1 overflow-y-auto">
         {/* Suggestions (autocomplete) */}
         {!showResults && suggestions.length === 0 && (
-          <div className="p-4 space-y-3">
-            <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Buscas populares</p>
-            {["Cimento", "Tintas", "Ferramentas", "Porcelanato", "Fio elétrico"].map((term) => (
-              <button
-                key={term}
-                onClick={() => setQuery(term)}
-                className="flex items-center gap-3 w-full p-2 rounded-lg hover:bg-muted transition-colors"
-              >
-                <Search className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm">{term}</span>
-              </button>
-            ))}
+          <div className="p-4 space-y-5">
+            {recents.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
+                    Buscas recentes
+                  </p>
+                  <button onClick={clearRecents} className="text-[11px] text-primary font-semibold">
+                    Limpar
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {recents.map((term) => (
+                    <button
+                      key={term}
+                      onClick={() => setQuery(term)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-foreground text-xs font-semibold hover:bg-secondary transition-colors"
+                    >
+                      <Clock className="w-3 h-3 text-muted-foreground" />
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div>
+              <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide mb-2">
+                Buscas populares
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["Cimento", "Tintas", "Ferramentas", "Porcelanato", "Fio elétrico"].map((term) => (
+                  <button
+                    key={term}
+                    onClick={() => setQuery(term)}
+                    className="px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold hover:bg-primary/20 transition-colors"
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
@@ -239,6 +368,7 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
                     <button
                       key={store.id}
                       onClick={() => {
+                        if (query) saveRecent(query);
                         onClose();
                         navigate(`/loja/${store.id}`);
                       }}
@@ -273,6 +403,7 @@ const SearchOverlay = ({ open, onClose, initialQuery = "" }: SearchOverlayProps)
                     <button
                       key={product.id}
                       onClick={() => {
+                        if (query) saveRecent(query);
                         onClose();
                         navigate(`/produto/${product.id}`);
                       }}
